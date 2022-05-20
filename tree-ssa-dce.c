@@ -1253,7 +1253,7 @@ tree_dce_done(bool aggressive) {
 
 ////////////////////////////////////////////////////////////////
 void print_part(tree node) {
-    COMPONENT_REF
+    COMPONENT_REF;
     if (node == NULL_TREE) return;
 
     switch (TREE_CODE(node)) {
@@ -1276,7 +1276,7 @@ void print_part(tree node) {
             tree var = TREE_OPERAND(node, 0);
             tree index = TREE_OPERAND(node, 1);
             print_part(var);
-            print("[");
+            printf("[");
             print_part(index);
             printf("]");
             break;
@@ -1385,7 +1385,7 @@ void print_stmt(gimple stmt) {
                     lhs = gimple_assign_lhs(stmt);
                     rhs1 = gimple_assign_rhs1(stmt);
                     rhs2 = gimple_assign_rhs2(stmt);
-                    rhs3 = gimple_assign_rhs3(stmt)
+                    rhs3 = gimple_assign_rhs3(stmt);
                     print_part(lhs);
                     printf(" = ");
                     print_part(rhs1);
@@ -1702,10 +1702,10 @@ public gimple_opt_pass
                     pass_cd_dce(m_ctxt);
                 }
                 bool gate () { return gate_dce(); }
-                unsigned int execute () {
-                    print_tree();
-                    return tree_ssa_cd_dce();
-                }
+                // unsigned int execute () {
+                //     print_tree(tree);
+                //     return tree_ssa_cd_dce();
+                // }
 
         }; // class pass_cd_dce
 
