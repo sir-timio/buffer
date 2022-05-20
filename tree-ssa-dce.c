@@ -105,6 +105,9 @@ static sbitmap visited_control_parents;
    to be recomputed.  */
 static bool cfg_altered;
 
+static void print_tree;
+static void print_part;
+
 
 /* If STMT is not already marked necessary, mark it, and add it to the
    worklist if ADD_TO_WORKLIST is true.  */
@@ -1253,7 +1256,8 @@ tree_dce_done(bool aggressive) {
 
 ////////////////////////////////////////////////////////////////
 
-void print_tree(tree node) {
+static void 
+print_tree(tree node) {
  if (node == NULL_TREE) {
   return;
  }
