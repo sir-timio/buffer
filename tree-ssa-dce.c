@@ -1252,6 +1252,75 @@ tree_dce_done(bool aggressive) {
 }
 
 ////////////////////////////////////////////////////////////////
+
+void print_tree(tree node) {
+ if (node == NULL_TREE) {
+  return;
+ }
+    switch (TREE_CODE(node)) {
+        case IDENTIFIER_NODE: {
+            printf("%s", IDENTIFIER_POINTER (node));
+            break;
+        }
+        case VAR_DECL: {
+            if (DECL_NAME(node))
+          printf("%s", IDENTIFIER_POINTER(DECL_NAME(node)));
+         break;
+     }
+        case CONST_DECL: {
+            if (DECL_NAME(node))
+                printf("%s", IDENTIFIER_POINTER (DECL_NAME(node)));
+            break;
+        }
+        case INTEGER_CST: {
+            printf("%ld", TREE_INT_CST_LOW(node));
+            break;
+        }
+        case STRING_CST:
+            printf("\"%s\"", TREE_STRING_POINTER (node));
+            break;
+        case ARRAY_REF: {
+            tree var = TREE_OPERAND(node, 0);
+            tree index = TREE_OPERAND(node, 1);
+            print_tree(var);
+            printf("[");
+            print_tree(index);
+            printf("]");
+            break;
+        }
+  case COMPONENT_REF: {
+   tree dcl_struct = TREE_OPERAND(node, 0);
+   tree dcl_field = TREE_OPERAND(node, 1);
+   printf("struct: ");
+   print_tree(dcl_struct);
+   printf("struct field: ");
+   print_tree(dcl_field);
+   break;
+  }
+        case MEM_REF: {
+            tree base = TREE_OPERAND(node, 0);
+            printf("*");
+            print_tree(base);
+            break;
+        }
+        case ADDR_EXPR: {
+            tree base = TREE_OPERAND(node, 0);
+            printf("&");
+            print_tree(base);
+            break;
+        }
+        case SSA_NAME: {
+         if (SSA_NAME_IDENTIFIER(node))
+                print_tree(SSA_NAME_IDENTIFIER (node));
+            printf("_%d", SSA_NAME_VERSION(node));
+            break;
+        }
+        default:
+   printf("unknown");
+            break;
+
+    }
+}
 void print_part(tree node) {
     COMPONENT_REF;
     if (node == NULL_TREE) return;
@@ -1407,74 +1476,7 @@ void print_stmt(gimple stmt) {
 }
 
 
-void print_tree(tree node) {
- if (node == NULL_TREE) {
-  return;
- }
-    switch (TREE_CODE(node)) {
-        case IDENTIFIER_NODE: {
-            printf("%s", IDENTIFIER_POINTER (node));
-            break;
-        }
-        case VAR_DECL: {
-            if (DECL_NAME(node))
-          printf("%s", IDENTIFIER_POINTER(DECL_NAME(node)));
-         break;
-     }
-        case CONST_DECL: {
-            if (DECL_NAME(node))
-                printf("%s", IDENTIFIER_POINTER (DECL_NAME(node)));
-            break;
-        }
-        case INTEGER_CST: {
-            printf("%ld", TREE_INT_CST_LOW(node));
-            break;
-        }
-        case STRING_CST:
-            printf("\"%s\"", TREE_STRING_POINTER (node));
-            break;
-        case ARRAY_REF: {
-            tree var = TREE_OPERAND(node, 0);
-            tree index = TREE_OPERAND(node, 1);
-            print_tree(var);
-            printf("[");
-            print_tree(index);
-            printf("]");
-            break;
-        }
-  case COMPONENT_REF: {
-   tree dcl_struct = TREE_OPERAND(node, 0);
-   tree dcl_field = TREE_OPERAND(node, 1);
-   printf("struct: ");
-   print_tree(dcl_struct);
-   printf("struct field: ");
-   print_tree(dcl_field);
-   break;
-  }
-        case MEM_REF: {
-            tree base = TREE_OPERAND(node, 0);
-            printf("*");
-            print_tree(base);
-            break;
-        }
-        case ADDR_EXPR: {
-            tree base = TREE_OPERAND(node, 0);
-            printf("&");
-            print_tree(base);
-            break;
-        }
-        case SSA_NAME: {
-         if (SSA_NAME_IDENTIFIER(node))
-                print_tree(SSA_NAME_IDENTIFIER (node));
-            printf("_%d", SSA_NAME_VERSION(node));
-            break;
-        }
-        default:
-   printf("unknown");
-            break;
 
-    }
-}
 ////////////////////////////////////////////////////////////////////
 /* Main routine to eliminate dead code.
    AGGRESSIVE controls the aggressiveness of the algorithm.
